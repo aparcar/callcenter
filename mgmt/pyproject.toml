@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "mgmt"
+version = "0.1.0"
+description = ""
+authors = ["Paul Spooren <mail@aparcar.org>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pyinfra = "^3.0.2"
+
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.5.5"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

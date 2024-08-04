@@ -1,0 +1,5 @@
+if [ "${ACTION}" = "ifup" ]; then
+    if [ "${INTERFACE}" = "unet" ]; then
+        /etc/init.d/dnsmasq restart
+    fi
+fi

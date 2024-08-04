@@ -1,0 +1,5 @@
+config asterisk 'general'
+	option enabled '1'
+	option log_stderr '1'
+	option log_stdout '0'
+	option options ''
