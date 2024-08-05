@@ -1,28 +1,8 @@
-from pyinfra.operations import server, files
+from pathlib import Path
+
 from pyinfra import host
 from pyinfra.facts.server import Hostname
-
-import json
-
-server.shell(name="Update package list", commands=["opkg update"])
-
-for package in [
-    "coreutils-stat",
-    "zram-swap",
-    "openssh-sftp-server",
-    "coreutils-sha1sum",
-]:
-    server.shell(
-        name=f"Install {package}",
-        commands=[f"opkg install {package}"],
-    )
-
-system_board = server.shell(
-    name="Get running OpenWrt version",
-    commands=["ubus call system board"],
-)
-
-# print(system_board.get_fact("stdout"))
+from pyinfra.operations import files, server
 
 changes = {}
 
