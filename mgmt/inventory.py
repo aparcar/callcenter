@@ -4,9 +4,9 @@ telefone = [
     "easy03.unet",
     "easy04.unet",
     "easy05.unet",
-    "easy06.unet",  # NOWIFI
+    "easy06.unet",
     "easy07.unet",
     "easy08.unet",
     "easy09.unet",
-    "easy10.unet",  # NOWIFI
+    "easy10.unet",
 ]
