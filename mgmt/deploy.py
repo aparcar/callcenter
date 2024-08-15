@@ -2,6 +2,7 @@ from pathlib import Path
 
 from pyinfra import host
 from pyinfra.facts.server import Hostname
+from pyinfra.facts.files import FindInFile
 from pyinfra.operations import files, server
 
 changes = {}
@@ -16,6 +17,27 @@ changes["hostname"] = server.files.line(
 
 if changes["hostname"].changed:
     server.shell(name="Reload system", commands=["/etc/init.d/system reload"])
+
+
+unet_option_key = host.get_fact(
+    FindInFile, "/etc/config/network", pattern="option key '.*'"
+)
+
+if unet_option_key:
+    changes["network"] = server.files.template(
+        name="Upload /etc/config/network",
+        src="files/network.j2",
+        dest="/etc/config/network",
+        unet_option_key=unet_option_key[0],
+        mode="644",
+    )
+else:
+    changes["network"] = server.files.put(
+        name=f"Upload /etc/config/network",
+        src=f"files/network",
+        dest=f"/etc/config/network",
+        mode="644",
+    )
 
 for file in ["extensions.conf", "pjsip.conf", "pjsip_wizard.conf", "lantiq.conf"]:
     changes[file] = server.files.put(
@@ -54,3 +76,6 @@ server.files.put(
     dest="/etc/hotplug.d/iface/99-dnsmasq-restart",
     mode="755",
 )
+
+if changes["network"].changed:
+    server.shell(name="Restart network", commands=["/etc/init.d/network restart"])

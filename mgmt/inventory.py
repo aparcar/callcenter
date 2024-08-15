@@ -1,4 +1,5 @@
 telefone = [
+    # "192.168.1.1",
     "easy01.unet",
     "easy02.unet",
     "easy03.unet",
@@ -9,4 +10,10 @@ telefone = [
     "easy08.unet",
     "easy09.unet",
     "easy10.unet",
+    "easy12.unet",
+    "easy13.unet",
+    "easy14.unet",
+    "easy15.unet",
+    "easy16.unet",
+    "easy17.unet",
 ]
