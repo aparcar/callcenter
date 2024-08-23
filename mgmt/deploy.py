@@ -4,8 +4,15 @@ from pyinfra import host
 from pyinfra.facts.server import Hostname
 from pyinfra.facts.files import FindInFile
 from pyinfra.operations import files, server
+from files.packages import PACKAGES
 
 changes = {}
+
+installed_packages = server.shell(
+    name="Get installed packages", commands=["opkg list-installed"]
+).stdout.splitlines()
+
+packages_to_install = [package for package in PACKAGES if package not in installed_packages]
 
 changes["hostname"] = server.files.line(
     name="Set hostname",
@@ -55,6 +62,13 @@ for file in ["firewall", "dhcp", "asterisk"]:
         mode="644",
     )
 
+if packages_to_install:
+    server.shell(name="Update package list", commands=["opkg update"])
+    changes["asterisk-packages"] = server.shell(
+        name="Install asterisk packages",
+        commands=[f"opkg install {package}" for package in packages_to_install],
+    )
+
 if (
     changes["asterisk"].changed
     or changes["extensions.conf"].changed
@@ -63,6 +77,9 @@ if (
     or changes["lantiq.conf"].changed
 ):
     server.shell(name="Reload asterisk", commands=["/etc/init.d/asterisk reload"])
+
+if changes["asterisk-packages"].changed:
+    server.shell(name="Restart asterisk", commands=["/etc/init.d/asterisk restart"])
 
 if changes["dhcp"].changed:
     server.shell(name="Restart dnsmasq", commands=["/etc/init.d/dnsmasq restart"])
