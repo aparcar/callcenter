@@ -7,16 +7,17 @@ from pyinfra.operations import files, server
 
 changes = {}
 
-changes["hostname"] = server.files.line(
-    name="Set hostname",
-    path="/etc/config/system",
-    line="	option hostname .*",
-    present=True,
-    replace=f"	option hostname '{host.name}'",
-)
+if host.name != "192.168.1.1":
+    changes["hostname"] = server.files.line(
+        name="Set hostname",
+        path="/etc/config/system",
+        line="	option hostname .*",
+        present=True,
+        replace=f"	option hostname '{host.name}'",
+    )
 
-if changes["hostname"].changed:
-    server.shell(name="Reload system", commands=["/etc/init.d/system reload"])
+    if changes["hostname"].changed:
+        server.shell(name="Reload system", commands=["/etc/init.d/system reload"])
 
 
 unet_option_key = host.get_fact(
@@ -47,7 +48,7 @@ for file in ["extensions.conf", "pjsip.conf", "pjsip_wizard.conf", "lantiq.conf"
         mode="644",
     )
 
-for file in ["firewall", "dhcp", "asterisk"]:
+for file in ["firewall", "dhcp", "asterisk", "wireless"]:
     changes[file] = server.files.put(
         name=f"Upload /etc/config/{file}",
         src=f"files/{file}",
@@ -70,6 +71,9 @@ if changes["dhcp"].changed:
 if changes["firewall"].changed:
     server.shell(name="Restart firewall", commands=["/etc/init.d/firewall reload"])
 
+if changes["wireless"].changed:
+    server.shell(name="Restart wireless", commands=["wifi"])
+
 server.files.put(
     name="Upload  /etc/hotplug.d/iface/99-dnsmasq-restart",
     src="files/99-dnsmasq-restart",
@@ -77,5 +81,5 @@ server.files.put(
     mode="755",
 )
 
-if changes["network"].changed:
-    server.shell(name="Restart network", commands=["/etc/init.d/network restart"])
+# if changes["network"].changed:
+#     server.shell(name="Restart network", commands=["/etc/init.d/network restart"])
