@@ -18,4 +18,5 @@ telefone = [
     "easy16.unet",
     # "easy17.unet",
     "easy18.unet",
+    "easy19.unet",
 ]
