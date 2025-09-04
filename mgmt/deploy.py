@@ -40,7 +40,7 @@ else:
         mode="644",
     )
 
-for file in ["extensions.conf", "pjsip.conf", "pjsip_wizard.conf", "lantiq.conf"]:
+for file in ["extensions.conf", "pjsip.conf", "pjsip_wizard.conf", "lantiq.conf", "manager.conf"]:
     changes[file] = server.files.put(
         name=f"Upload {file}",
         src=f"files/{file}",
